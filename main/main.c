@@ -151,8 +151,6 @@ int main(int argc, char **argv) {
 
 		print("\x1b[H");
 		print(showFlavor ? flavorName : title);
-		print("\x1b[H");
-		printf("%i", SYS_GetArenaSize());
 		print("\x1b[0;0;0m");
 
 		if (menuResult.ooer)

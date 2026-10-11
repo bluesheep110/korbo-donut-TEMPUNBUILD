@@ -241,7 +241,7 @@ static char *menu_main[] = {
 static char *menu_info[] = {
 	"Originally based off \"Wii Donut\" by emilydaemon",
 	"Written, and otherwise created by Korbo Q. Lamp (Korbosoft)",
-	"Press A to toggle manual mode (controlled by sticks)"
+	"Press A to toggle manual (controlled by sticks)"
 };
 
 static void draw_tui_window(u8 startX, u8 startY, u8 width, u8 height, const char* title) {
@@ -376,9 +376,11 @@ void render_general_menu(Menu menuType, u8 selected) {
 			render_options_menu(selected);
 			break;
 		case FLAVORS:
+			render_options_menu(0);
 			render_flavor_menu(selected);
 			break;
 		case TOGGLE:
+			render_options_menu(0);
 			render_toggle_menu(selected);
 			break;
 		case GREETZ:

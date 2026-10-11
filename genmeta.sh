@@ -15,7 +15,6 @@ xOx-Liy-Codez-XD-oXo helped me a ton getting the rewrite to initially work.
 
 Music can be changed by adding a "music.(mod/it/s3m/xm/whatever)" file in the app directory.
 This program supports *most* tracker music formats; https://modarchive.org is a good source.
-Certain formats (like mptm) may cause lag if intensive enough.
 
 e-mail:
 Korbo: korbin.m.marshall@gmail.com

@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <ogc/conf.h>
 #include <string.h>
-#include <grrmod.h>
+#include <grrmod-xmp.h>
 
 #include <aesndlib.h>
 

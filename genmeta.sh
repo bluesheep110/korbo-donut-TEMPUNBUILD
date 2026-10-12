@@ -13,7 +13,7 @@ cat << EOF
 None of this would have ever happened without "Wii Donut" by emilydaemon, and
 xOx-Liy-Codez-XD-oXo helped me a ton getting the rewrite to initially work.
 
-Music can be changed by adding a "music.(mod/it/s3m/xm/whatever)" file in the app directory.
+Music can be changed by adding a mod/it/s3m/xm/whatever tracker module in the music directory.
 This program supports *most* tracker music formats; https://modarchive.org is a good source.
 
 e-mail:

@@ -12,11 +12,11 @@
 
 #include "music_it.h"
 
-#define FILETYPE_COUNT 68
-
 static bool paused = false;
 static u8 *module = NULL;
 static FileList *list = NULL;
+static char *title_pointer;
+static int currentSong = 0;
 
 static bool is_title_empty(const char *title) {
 	if (title[0] == '\0') return true;
@@ -29,20 +29,16 @@ static bool is_title_empty(const char *title) {
 	return isAllSpaces;
 }
 
-int music_init(char *title_display) {
-	list = create_file_list();
+void music_play(char *filename) {
+	FILE *f = file_open(filename, "rb");
 
-	file_find(list, "music/", "*", FNM_PATHNAME);
-	FILE *f = NULL;
-	if (list->filenames[0]) {
-		f = file_open(list->filenames[0], "rb");
-	}
-
-	GRRMOD_Init(SYS_GetSoundMode()); // check for mono
 	if (f) {
 		fseek(f, 0, SEEK_END);
 		long module_size = ftell(f);
 		rewind(f);
+
+		if (module)
+			free(module);
 
 		module = (u8 *)malloc(module_size);
 
@@ -53,11 +49,32 @@ int music_init(char *title_display) {
 	} else { GRRMOD_SetMOD(music_it, music_it_size); }
 
 	char *title = GRRMOD_GetSongTitle();
-	format_info("Song: ", is_title_empty(title) ? "Untitled" : title, title_display, true);
-	// format_info("Song: ", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", title_display);
+	format_info("Song: ", is_title_empty(title) ? "Untitled" : title, title_pointer, true);
 
+	GRRMOD_Stop();
 	GRRMOD_Start();
-	return strlen(title_display);
+}
+
+void music_init(char *title_display) {
+	title_pointer = title_display;
+
+	list = create_file_list();
+
+	file_find(list, "music/", "*", FNM_PATHNAME);
+
+	GRRMOD_Init(SYS_GetSoundMode()); // check for mono
+
+	music_play(list->filenames[0]);
+}
+
+void music_tick() {
+	if (GRRMOD_GetLoopCount() > 0) {
+		if (currentSong != -1) {
+			if (++currentSong >= list->count)
+				currentSong = 0;
+			music_play(list->filenames[currentSong]);
+		}
+	}
 }
 
 void music_free(void) {

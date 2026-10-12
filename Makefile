@@ -1,6 +1,6 @@
 .PHONY: clean gba gamecube wii
 
-VERSION	:= 8.0.2
+VERSION	:= 8.1.0
 
 CURDIR = $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 
@@ -32,12 +32,13 @@ release:
 	$(CURDIR)/genmeta.sh $(VERSION) > meta.xml
 	@echo
 	@echo Zipping release
-	@mkdir -p korbodonut
+	@mkdir -p korbodonut/music
 	@cp boot.dol meta.xml icon.png ./korbodonut/
 	@cp donut-gc.elf donut-gc-debug.elf
 	@cp boot.elf donut-wii-debug.elf
 	@zip -rv donut ./korbodonut/
 	@echo
+	rm -f temp.md
 	nano -L temp.md
 	@printf "\n\nThe debug ELFs have no extra features other than debug info embedded into them." >> temp.md
 	gh release create v$(VERSION) -t v$(VERSION) donut.zip donut-gc.dol donut-wii-debug.elf donut-gc-debug.elf -F temp.md

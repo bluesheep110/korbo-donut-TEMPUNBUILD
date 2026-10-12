@@ -15,13 +15,21 @@ FileList* create_file_list(void) {
 	return list;
 }
 
+static int sort_files(const void *a, const void *b) {
+    const char *str1 = *(const char **)a;
+    const char *str2 = *(const char **)b;
+    return strcmp(str1, str2);
+}
+
 void add_file_to_list(FileList *list, const char *filename) {
-	if (list->count >= list->capacity) {
-		list->capacity *= 2;
-		list->filenames = realloc(list->filenames, list->capacity * sizeof(char *));
-	}
-	list->filenames[list->count] = strdup(filename);
-	list->count++;
+    if (list->count >= list->capacity) {
+        list->capacity *= 2;
+        list->filenames = realloc(list->filenames, list->capacity * sizeof(char *));
+    }
+    list->filenames[list->count] = strdup(filename);
+    list->count++;
+
+    qsort(list->filenames, list->count, sizeof(char *), sort_files);
 }
 
 void free_file_list(FileList *list) {

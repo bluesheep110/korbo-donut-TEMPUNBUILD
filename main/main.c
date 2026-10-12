@@ -135,6 +135,8 @@ int main(int argc, char **argv) {
 		input_scan();
 		input_down(0, 0);
 
+		music_tick();
+
 		render_frame(
 			A,
 			B,
